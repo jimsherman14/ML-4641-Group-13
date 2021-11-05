@@ -4,18 +4,37 @@ from pandas_datareader import data
 
 startDate = '2000-1-1'
 endDate = '2020-12-31'
-companies = ['MSFT', 'AAPL', 'AMZN', 'GOOGL','NVDA', 'JNJ', 'DIS', 'BIIB', 'SYY', 'PPG', 'GIS', 'YUM', 'KHC', 'WHR', 'PKG', 'PTC', 'HD', 'MRO']
+companies = ['VOO', 'MSFT', 'AAPL', 'AMZN', 'GOOGL','NVDA', 'JNJ', 'DIS', 'BIIB', 'SYY', 'PPG', 'GIS', 'YUM', 'KHC', 'WHR', 'PKG', 'PTC', 'HD', 'MRO']
 
-# Only get the adjusted close.
-voo = data.DataReader("VOO", start=startDate, end=endDate, data_source='yahoo')['Adj Close']
-df = pd.DataFrame(voo)
+
+
+
+
+# Adjusted close price
+dfPrice = pd.DataFrame()
 
 for ticker in companies:
-	counter = 1
+	counter = 0
 	print(ticker)
-	df.insert(counter, ticker, data.DataReader(ticker, start=startDate, end=endDate, data_source='yahoo')['Adj Close'])
+	dfPrice.insert(counter, ticker, data.DataReader(ticker, start=startDate, end=endDate, data_source='yahoo')['Adj Close'])
 	counter += 1
 
 
 
-df.to_excel("output.xlsx") 
+dfPrice.to_excel("price.xlsx") 
+
+
+
+#Current Metrics
+dfMetrics = pd.DataFrame()
+
+metrics= ['marketCap', 'sharesOutstanding', 'trailingPE', 'forwardPE', 'priceToBook', 'fiftyTwoWeekLow', 'fiftyTwoWeekHigh', 'averageDailyVolume3Month']
+
+for metric in metrics:
+	counter = 0
+	print(metric)
+	dfMetrics.insert(counter, metric, data.get_quote_yahoo(companies)[metric])
+	counter += 1
+
+
+dfMetrics.to_excel("metrics.xlsx") 
